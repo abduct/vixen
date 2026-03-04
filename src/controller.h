@@ -23,6 +23,20 @@ typedef struct
 struct Controller;
 typedef struct Controller Controller;
 
+typedef struct
+{
+  uint8_t angle_bits;
+  uint8_t throttle_bits;
+  uint8_t brake_bits;
+  uint8_t clutch_bits;
+  uint8_t handbrake_bits;
+  uint16_t min_angle;
+  uint16_t max_angle;
+  uint8_t ff_mask;
+  uint8_t caps;
+} __attribute__((packed)) XoneWheelConfig;
+
+
 struct Controller
 {
   uint8_t type;
@@ -40,9 +54,38 @@ struct Controller
   int vendor;
   int product;
   uint8_t (*processReport)(Controller *c, size_t length);
+  void (*setRumble)(Controller *c, uint8_t small, uint8_t large);
+
+  // TODO: move to struct?
+  uint8_t xone_seq_system;
+  uint8_t xone_seq_vendor;
+  uint16_t xone_fragment_full_size;
+  uint16_t xone_fragment_offset;
+  uint8_t xone_type;
+  uint8_t *xone_metadata;
+  uint8_t xone_guide_pressed;
+  // wheel config
+  XoneWheelConfig xone_wheel_config;
 };
 
 void usb_read(Controller *c);
 void usb_write(Controller *c, uint8_t *data, int len);
+
+
+#define HID_GET_REPORT 0x01
+#define HID_GET_IDLE 0x02
+#define HID_GET_PROTOCOL 0x03
+#define HID_SET_REPORT 0x09
+#define HID_SET_IDLE 0x0A
+#define HID_SET_PROTOCOL 0x0B
+
+#define HID_REPORT_TYPE_INPUT 0x01
+#define HID_REPORT_TYPE_OUTPUT 0x02
+#define HID_REPORT_TYPE_FEATURE 0x03
+
+#define EVF_SEND 1
+#define EVF_RECV 2
+#define EVF_CTRL 4
+
 
 #endif // __CONTROLLER_H__

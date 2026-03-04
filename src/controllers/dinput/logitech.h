@@ -55,4 +55,17 @@ uint8_t logitech_processReport(Controller *c, size_t length)
     return 1;
 }
 
+void logitech_setRumble(Controller *c, uint8_t small, uint8_t large)
+{
+    if (small || large)
+    {
+      uint8_t rumblecmd[] __attribute__((aligned(64))) = {0x51, 0x00, small, 0x00, large, 0x00, 0x00};
+      usb_write(c, rumblecmd, 7);
+    } else {
+      uint8_t rumblecmd[] __attribute__((aligned(64))) = {0xf3, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+      usb_write(c, rumblecmd, 7);
+    }
+}
+
+
 #endif

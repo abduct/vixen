@@ -6,6 +6,7 @@
 #include "controllers/xbox_360_controller.h"
 #include "controllers/xbox_360w_controller.h"
 #include "controllers/xbox_controller.h"
+#include "controllers/xone_controller.h"
 
 #include <psp2kern/kernel/suspend.h>
 #include <psp2kern/kernel/threadmgr.h>
@@ -16,8 +17,17 @@ void on_read_data(int32_t result, int32_t count, void *arg)
   // process buffer
 
   Controller *c = (Controller *)arg;
+
   if (result == 0 && count > 0 && arg)
   {
+#if defined(DEBUG)
+  ksceDebugPrintf("<- In: \n");
+  for (int i = 0; i < count; i++)
+  {
+    ksceDebugPrintf("%02X ", c->buffer[i]);
+  }
+  ksceDebugPrintf("\n<- ---\n");
+#endif
     if (c->inited)
     {
       int ret = 0;
@@ -38,6 +48,9 @@ void on_read_data(int32_t result, int32_t count, void *arg)
         case PAD_DINPUT:
           ret = DinputController_processReport(c, count);
           break;
+        case PAD_XONE:
+          ret = XboxOneController_processReport(c, count);
+          break;
         default:
           break;
       }
@@ -51,7 +64,9 @@ void on_read_data(int32_t result, int32_t count, void *arg)
 
 void on_write_data(int32_t result, int32_t count, void *arg)
 {
+  Controller *c = (Controller *)arg;
   // check status
+  ksceDebugPrintf("wrote: result: 0x%08X, count: %d\n", result, count);
   // do nothing?
 }
 
@@ -60,7 +75,9 @@ void usb_read(Controller *c)
   int ret;
 
   if (!c->inited)
+  {
     return;
+  }
 
   ret = ksceUsbdInterruptTransfer(c->pipe_in, c->buffer, c->buffer_size, on_read_data, c);
 
@@ -74,11 +91,24 @@ void usb_read(Controller *c)
 void usb_write(Controller *c, uint8_t *data, int len)
 {
   int ret;
+
+#if defined(DEBUG)
+  ksceDebugPrintf("-> Out: \n");
+  for (int i = 0; i < len; i++)
+  {
+    ksceDebugPrintf("%02X ", data[i]);
+  }
+  ksceDebugPrintf("\n-> ---\n");
+#endif
   ret = ksceUsbdInterruptTransfer(c->pipe_out, data, len, on_write_data, c);
+
+  ksceKernelDelayThread(6000);
 
   if (ret < 0)
   {
     ksceDebugPrintf("ksceUsbdInterruptTransfer(out) error: 0x%08x\n", ret);
     // error out
   }
+
+
 }

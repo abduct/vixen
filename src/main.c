@@ -4,6 +4,7 @@
 #include "controllers/xbox_360_controller.h"
 #include "controllers/xbox_360w_controller.h"
 #include "controllers/xbox_controller.h"
+#include "controllers/xone_controller.h"
 #include "devicelist.h"
 
 #include <psp2kern/ctrl.h>
@@ -13,6 +14,7 @@
 #include <psp2kern/kernel/suspend.h>
 #include <psp2kern/kernel/sysclib.h>
 #include <psp2kern/kernel/sysmem/data_transfers.h>
+#include <psp2kern/kernel/sysmem/heap.h>
 #include <psp2kern/kernel/threadmgr.h>
 #include <psp2kern/kernel/threadmgr/event_flags.h>
 #include <psp2kern/kernel/aimgr.h>
@@ -42,6 +44,7 @@
   })
 
 static int started = 0;
+SceUID heap;
 
 static Controller controllers[MAX_CONTROLLERS];
 
@@ -108,6 +111,12 @@ DECL_FUNC_HOOK(sceCtrlSetActuator, int port, const SceCtrlActuator *pState)
         break;
       case PAD_XBOX:
         XboxController_setRumble(&controllers[port - 1], lpState.small, lpState.large);
+        break;
+      case PAD_DINPUT:
+        DinputController_setRumble(&controllers[port - 1], lpState.small, lpState.large);
+        break;
+      case PAD_XONE:
+        XboxOneController_setRumble(&controllers[port - 1], lpState.small, lpState.large);
         break;
       default:
         break;
@@ -319,6 +328,9 @@ int libvixen_attach(int device_id)
           case PAD_DINPUT:
             DinputController_probe(&controllers[cont], device_id, cont, device->idVendor, device->idProduct);
             break;
+          case PAD_XONE:
+            XboxOneController_probe(&controllers[cont], device_id, cont, device->idVendor, device->idProduct);
+            break;
           default:
             break;
         }
@@ -331,6 +343,8 @@ int libvixen_attach(int device_id)
         }
         ksceDebugPrintf("Attached!\n");
         controllers[cont].processReport = _devices[i].processReport;
+        controllers[cont].setRumble = _devices[i].setRumble;
+
         return SCE_USBD_ATTACH_SUCCEEDED;
       }
     }
@@ -367,6 +381,7 @@ int libvixen_detach(int device_id)
         controllers[i].pipe_out     = 0;
         controllers[i].pipe_control = 0;
       }
+
       return SCE_USBD_DETACH_SUCCEEDED;
     }
   }
@@ -447,6 +462,11 @@ int module_start(SceSize args, void *argp)
   ksceDebugPrintf("ksceUsbdUnregisterDriver = 0x%08x\n", ret_drv);
 
   ksceKernelRegisterSysEventHandler("zvixen_sysevent", libvixen_sysevent_handler, NULL);
+
+  SceKernelHeapCreateOpt opt;
+  opt.size = sizeof(SceKernelHeapCreateOpt);
+  opt.attr = SCE_KERNEL_HEAP_ATTR_HAS_AUTO_EXTEND;
+  heap = ksceKernelCreateHeap("VixenHeap", 0x1000, &opt);
 
   return SCE_KERNEL_START_SUCCESS;
 }

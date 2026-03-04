@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
   src/controllers/xbox_controller.c
   src/controllers/xbox_360_controller.c
   src/controllers/xbox_360w_controller.c
+  src/controllers/xone_controller.c
   src/controllers/ds3_controller.c
   src/controllers/dinput_controller.c
 )
@@ -51,6 +52,7 @@ add_executable(${PROJECT_NAME}_ds3
   src/controllers/xbox_controller.c
   src/controllers/xbox_360_controller.c
   src/controllers/xbox_360w_controller.c
+  src/controllers/xone_controller.c
   src/controllers/ds3_controller.c
   src/controllers/dinput_controller.c
 )

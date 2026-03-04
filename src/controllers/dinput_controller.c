@@ -100,6 +100,15 @@ uint8_t DinputController_probe(Controller *c, int device_id, int port, int vendo
   return 1;
 }
 
+void DinputController_setRumble(Controller *c, uint8_t small, uint8_t large)
+{
+  if (c->setRumble)
+  {
+    c->setRumble(c, small, large);
+  }
+}
+
+
 uint8_t DinputController_processReport(Controller *c, size_t length)
 {
   // For Dual PSX Adaptor consider only first controller port

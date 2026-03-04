@@ -24,13 +24,13 @@ uint8_t Xbox360Controller_probe(Controller *c, int device_id, int port)
   // init endpoints and stuff
 
   SceUsbdInterfaceDescriptor *interface;
-  interface = (SceUsbdInterfaceDescriptor *)ksceUsbdScanStaticDescriptor(device_id, 0, SCE_USBD_DESCRIPTOR_ENDPOINT);
+  interface = (SceUsbdInterfaceDescriptor *)ksceUsbdScanStaticDescriptor(device_id, 0, SCE_USBD_DESCRIPTOR_INTERFACE);
   while (interface)
   {
     if (interface->bInterfaceProtocol == USB_IF_PROTOCOL)
       break;
     interface = (SceUsbdInterfaceDescriptor *)ksceUsbdScanStaticDescriptor(device_id, interface,
-                                                                           SCE_USBD_DESCRIPTOR_ENDPOINT);
+                                                                           SCE_USBD_DESCRIPTOR_INTERFACE);
   }
 
   SceUsbdEndpointDescriptor *endpoint;
