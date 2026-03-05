@@ -13,6 +13,7 @@ typedef enum
   PAD_XONE,
   PAD_DS3,
   PAD_DINPUT,
+  PAD_GC,
 } vixenPadType;
 
 typedef struct

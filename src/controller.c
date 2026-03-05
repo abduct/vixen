@@ -7,6 +7,7 @@
 #include "controllers/xbox_360w_controller.h"
 #include "controllers/xbox_controller.h"
 #include "controllers/xone_controller.h"
+#include "controllers/gc_controller.h"
 
 #include <psp2kern/kernel/suspend.h>
 #include <psp2kern/kernel/threadmgr.h>
@@ -50,6 +51,9 @@ void on_read_data(int32_t result, int32_t count, void *arg)
           break;
         case PAD_XONE:
           ret = XboxOneController_processReport(c, count);
+          break;
+        case PAD_GC:
+          ret = GCController_processReport(c, count);
           break;
         default:
           break;

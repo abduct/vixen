@@ -21,6 +21,7 @@ add_executable(${PROJECT_NAME}
   src/controllers/xone_controller.c
   src/controllers/ds3_controller.c
   src/controllers/dinput_controller.c
+  src/controllers/gc_controller.c
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -55,6 +56,7 @@ add_executable(${PROJECT_NAME}_ds3
   src/controllers/xone_controller.c
   src/controllers/ds3_controller.c
   src/controllers/dinput_controller.c
+  src/controllers/gc_controller.c
 )
 
 target_link_libraries(${PROJECT_NAME}_ds3

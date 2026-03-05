@@ -291,4 +291,6 @@ gamepad_t _devices[] = {{PAD_XBOX360, 0x0079, 0x18d4, NULL, NULL},  // GPD Win 2
                         {PAD_DINPUT, 0x289b, 0x0044, raphnetpsx_processReport,          NULL},               // Raphnet Technologies PSX to USB v.1.0
                         {PAD_DINPUT, 0x2dc8, 0x3105, eightbitdoadapter_processReport,   NULL},               // 8bitdo adapter 2 (dinput mode)
 
+                        {PAD_GC, 0x057e, 0x0337, NULL, NULL},     // WiiU gamecube adapter (wiiu/switch mode or original)
+
                         {PAD_UNKNOWN, 0x0000, 0x0000, NULL, NULL}}; // Null

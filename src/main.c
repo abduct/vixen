@@ -5,7 +5,9 @@
 #include "controllers/xbox_360w_controller.h"
 #include "controllers/xbox_controller.h"
 #include "controllers/xone_controller.h"
+#include "controllers/gc_controller.h"
 #include "devicelist.h"
+#include "controllers/utils/clamp.h"
 
 #include <psp2kern/ctrl.h>
 #include <psp2kern/kernel/cpu.h>
@@ -46,16 +48,7 @@
 static int started = 0;
 SceUID heap;
 
-static Controller controllers[MAX_CONTROLLERS];
-
-static inline int clamp(int value, int min, int max)
-{
-  if (value <= min)
-    return min;
-  if (value >= max)
-    return max;
-  return value;
-}
+/*static */Controller controllers[MAX_CONTROLLERS];
 
 DECL_FUNC_HOOK(ksceCtrlGetControllerPortInfo, SceCtrlPortInfo *info)
 {
@@ -117,6 +110,9 @@ DECL_FUNC_HOOK(sceCtrlSetActuator, int port, const SceCtrlActuator *pState)
         break;
       case PAD_XONE:
         XboxOneController_setRumble(&controllers[port - 1], lpState.small, lpState.large);
+        break;
+      case PAD_GC:
+        GCController_setRumble(&controllers[port - 1], lpState.small, lpState.large);
         break;
       default:
         break;
@@ -285,12 +281,51 @@ int libvixen_attach(int device_id)
 
       for (int cont = 0; cont < MAX_CONTROLLERS; cont++)
       {
+        // need all 4 ports free
+        if (controllers[cont].inited) return SCE_USBD_ATTACH_FAILED;
+      }
+
+      for (int cont = 0; cont < MAX_CONTROLLERS; cont++)
+      {
         Xbox360WController_probe(&controllers[cont], device_id, cont);
         if (!controllers[cont].inited)
         {
           ksceDebugPrintf("Can't init gamepad (wireless)\n");
           return SCE_USBD_ATTACH_FAILED;
         }
+      }
+      ksceDebugPrintf("Attached!\n");
+      return SCE_USBD_ATTACH_SUCCEEDED;
+    }
+    // gamecube adapter takes all 4 ports, sorry
+    else if (_devices[i].type == PAD_GC)
+    {
+
+      for (int cont = 0; cont < MAX_CONTROLLERS; cont++)
+      {
+        // need all 4 ports free
+        if (controllers[cont].inited) return SCE_USBD_ATTACH_FAILED;
+      }
+
+      GCController_probe(&controllers[0], device_id, 0);
+      if (!controllers[0].inited)
+      {
+        ksceDebugPrintf("Can't init gamepad adapter\n");
+        return SCE_USBD_ATTACH_FAILED;
+      }
+
+      // copy data to other ports. we'll update attached state in process report
+      for (int cont = 1; cont < MAX_CONTROLLERS; cont++)
+      {
+        controllers[cont].pipe_in = controllers[0].pipe_in;
+        controllers[cont].pipe_out = controllers[0].pipe_out;
+        controllers[cont].inited = 1;
+        controllers[cont].attached = 0;
+        controllers[cont].type = PAD_GC;
+        controllers[cont].buffer_size = 37;
+        controllers[cont].device_id = device_id;
+        controllers[cont].port          = cont;
+        controllers[cont].battery_level = 5;
       }
       ksceDebugPrintf("Attached!\n");
       return SCE_USBD_ATTACH_SUCCEEDED;
@@ -302,7 +337,7 @@ int libvixen_attach(int device_id)
       // find free slot
       for (int i = 0; i < MAX_CONTROLLERS; i++)
       {
-        if (!controllers[i].attached || !controllers[i].inited)
+        if (!controllers[i].inited)
         {
           cont = i;
           break;
