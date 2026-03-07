@@ -92,6 +92,14 @@ uint8_t DinputController_probe(Controller *c, int device_id, int port, int vendo
     if (c->vendor == 0x2dc8 && c->product == 0x3105)
         ksceUsbdGetHidDescriptor(control_pipe_id, NULL, 0, NULL, NULL);
 
+    // enable logitech wheel auto-center
+    // TODO: export auto-centering api and make an app for that?
+    if (c->vendor == 0x046d && c->product == 0xc294)
+    {
+        uint8_t centercmd[] __attribute__((aligned(64))) = {0xfe, 0x0d, 0x0f, 0x0f, 0xDD, 0x00, 0x00, 0x00};
+        usb_write(c, centercmd, 8);
+    }
+
     c->attached = 1;
     c->inited   = 1;
   }

@@ -3,6 +3,7 @@
 #include "controllers/utils/bit.h"
 #include "controllers/dinput/logitech.h"
 #include "controllers/dinput/logitech_wingman.h"
+#include "controllers/dinput/logitech_wheel.h"
 #include "controllers/dinput/psclassic.h"
 #include "controllers/dinput/horidiva.h"
 #include "controllers/dinput/horidiva_ps4.h"
@@ -269,10 +270,6 @@ gamepad_t _devices[] = {{PAD_XBOX360, 0x0079, 0x18d4, NULL, NULL},  // GPD Win 2
 
                         {PAD_DINPUT, 0x0079, 0x1804, sfcconverter_processReport,        NULL},               // NES/FC/SFC Joypad TO USB BOX
                         {PAD_DINPUT, 0x046d, 0xc20c, logitechWingman_processReport,     NULL},               // Logitech Wingman
-                        // note: technically, F310 / dualaction doesn't have rumble, but they both can be upgraded to support it
-                        {PAD_DINPUT, 0x046d, 0xc216, logitech_processReport,            logitech_setRumble}, // Logitech F310 Gamepad [DirectInput Mode] / DualAction
-                        {PAD_DINPUT, 0x046d, 0xc218, logitech_processReport,            logitech_setRumble}, // Logitech F510 Gamepad [DirectInput Mode] / Rumblepad 2
-                        {PAD_DINPUT, 0x054c, 0x0cda, psclassic_processReport,           NULL},               // Playstation Classic
                         {PAD_DINPUT, 0x0810, 0x0001, p2top3converter_processReport,     NULL},               // Dual PSX Adaptor
                         {PAD_DINPUT, 0x0810, 0x0003, p2top3converter_processReport,     NULL},               // PS2 to PS3 USB
                         {PAD_DINPUT, 0x0925, 0x1700, mayflash_processReport,            NULL},               // Mayflash SS
@@ -290,6 +287,12 @@ gamepad_t _devices[] = {{PAD_XBOX360, 0x0079, 0x18d4, NULL, NULL},  // GPD Win 2
                         {PAD_DINPUT, 0x12ba, 0x0100, horiDiva_processReport,            NULL},               // Raspberry Pi Pico GH
                         {PAD_DINPUT, 0x289b, 0x0044, raphnetpsx_processReport,          NULL},               // Raphnet Technologies PSX to USB v.1.0
                         {PAD_DINPUT, 0x2dc8, 0x3105, eightbitdoadapter_processReport,   NULL},               // 8bitdo adapter 2 (dinput mode)
+                        // note: technically, F310 / dualaction doesn't have rumble, but they both can be upgraded to support it
+                        {PAD_DINPUT, 0x046d, 0xc216, logitech_processReport,            logitech_setRumble}, // Logitech F310 Gamepad [DirectInput Mode] / DualAction
+                        {PAD_DINPUT, 0x046d, 0xc218, logitech_processReport,            logitech_setRumble}, // Logitech F510 Gamepad [DirectInput Mode] / Rumblepad 2
+                        {PAD_DINPUT, 0x046d, 0xc294, logitech_wheel_processReport,      NULL},               // Logitech Formula Force EX wheel
+                        {PAD_DINPUT, 0x054c, 0x0cda, psclassic_processReport,           NULL},               // Playstation Classic
+
 
                         {PAD_GC, 0x057e, 0x0337, NULL, NULL},     // WiiU gamecube adapter (wiiu/switch mode or original)
 
