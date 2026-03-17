@@ -2,6 +2,7 @@
 
 #include "controllers/utils/bit.h"
 #include "controllers/dinput/logitech.h"
+#include "controllers/dinput/logitech_e3dpro.h"
 #include "controllers/dinput/logitech_wingman.h"
 #include "controllers/dinput/logitech_wheel.h"
 #include "controllers/dinput/psclassic.h"
@@ -261,7 +262,6 @@ gamepad_t _devices[] = {{PAD_XBOX360, 0x0079, 0x18d4, NULL, NULL},  // GPD Win 2
                         {PAD_XONE, 0x24c6, 0x543a, NULL, NULL},     // PowerA Xbox One wired controller
                         {PAD_XONE, 0x24c6, 0x551a, NULL, NULL},     // PowerA FUSION Pro Controller
                         {PAD_XONE, 0x24c6, 0x561a, NULL, NULL},     // PowerA FUSION Controller
-                        {PAD_XONE, 0x24c6, 0x5b00, NULL, NULL},     // ThrustMaster Ferrari 458 Racing Wheel
                         {PAD_XONE, 0x2dc8, 0x2000, NULL, NULL},     // 8BitDo Pro 2 Wired Controller fox Xbox
 
 #if defined(WITH_DS3)
@@ -287,6 +287,7 @@ gamepad_t _devices[] = {{PAD_XBOX360, 0x0079, 0x18d4, NULL, NULL},  // GPD Win 2
                         {PAD_DINPUT, 0x12ba, 0x0100, horiDiva_processReport,            NULL},               // Raspberry Pi Pico GH
                         {PAD_DINPUT, 0x289b, 0x0044, raphnetpsx_processReport,          NULL},               // Raphnet Technologies PSX to USB v.1.0
                         {PAD_DINPUT, 0x2dc8, 0x3105, eightbitdoadapter_processReport,   NULL},               // 8bitdo adapter 2 (dinput mode)
+                        {PAD_DINPUT, 0x046d, 0xc215, logitech_e3dpro_processReport,     NULL},               // Logitech Extreme 3D Pro stick
                         // note: technically, F310 / dualaction doesn't have rumble, but they both can be upgraded to support it
                         {PAD_DINPUT, 0x046d, 0xc216, logitech_processReport,            logitech_setRumble}, // Logitech F310 Gamepad [DirectInput Mode] / DualAction
                         {PAD_DINPUT, 0x046d, 0xc218, logitech_processReport,            logitech_setRumble}, // Logitech F510 Gamepad [DirectInput Mode] / Rumblepad 2
