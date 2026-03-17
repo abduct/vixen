@@ -1,19 +1,28 @@
 # ViXEn
 **Vi**ta **X**-input **En**abler
 
-PSVita kernel driver for x-input gamepads (e.g. xbox360)
+PSVita kernel driver for wired gamepads
 
 ## Features
 
-* Support for up to 4 wired usb x-input/dinput/hid, original xbox and ps3 devices.
+* Support for up to 4 wired usb gipi/x-input/dinput/hid, original xbox and ps3 devices.
 * Support for up to 4 wireless Xbox 360 gamepads via 1 wired usb receiver.
+* Support for up to 4 Gamecube gamepads via wired usb adapter (original/third-party).
+* Support for up to 4 wired xbox one/series gamepads.
+* Support for up to 4 wired wheels (currently only Logitech Formula Force EX and Thrustmaster Ferrari Spider).
 * Auto turn-off wireless controllers on suspend.
 
 For full list of supported devices see [here](src/devicelist.c)
 
 ## Notes:
+* **usb hub with external power** is required for xbox one/series pads and anything with force-feedback.
 * xbox 360 wireless receiver takes over all 4 gamepad ports, so you can't use wired and wireless gamepads simultaniously.
-* 8bitdo adapter requires setting it's mode to Dinput mode (see it's manual)
+* Gamecube adapter takes over all 4 gamepad ports, so you can't use wired and wireless gamepads simultaniously.
+* Third-party Gamecube adapter switch should be set to wiiu/switch mode. Supports force-feedback.
+* 8bitdo adapter requires setting it's mode to Dinput mode (see it's manual).
+* Wheel gas/brake are mapped to right stick up/down. Because games use whatever for gas/brake, use reVita to remap.
+* Logitech Formula Force EX button mapping follows it's ps2 variant. There's no force-feedback, only auto-centering.
+* Thrustmaster Ferrari Spider button map follows xbox mappings.
 
 ## Read this carefully
 There two versions of plugins: `vixen.skprx` and `vixen_ds3.skprx`. Second one supports wired ds3-alike pads.  
@@ -27,7 +36,7 @@ Tl;dr if you don't use anything, that presents itself as ds3 (except wireless ds
 * Copy `vixen.skprx` or `vixen_ds3.skprx` into `ur0:tai` folder
 * Add `ur0:tai/vixen.skprx` or `ur0:tai/vixen.skprx` line under `*KERNEL` in tai config and reboot.
 * For vita you need usb Y-cable and external power. See [this](https://github.com/isage/vita-usb-ether#hardware) for example.
-* For pstv it is **highly** recommended to use usb-hub with external power for gamepads with force-feedback.
+* **usb hub with external power** is required for xbox one/series pads and anything with force-feedback.
 
 ## FAQ
 * **Does it support joycon, xbox one s, _insert another wireless controller here_?**  
@@ -37,9 +46,9 @@ Tl;dr if you don't use anything, that presents itself as ds3 (except wireless ds
 * **Can i connect my Xbox 360 pad via charge'n'play?**  
   No. Because it's more charge than play. It doesn't support data. You need wireless receiver.
 * **Does it support _insert controller name here_?**  
-  Currently it supports plenty of x-input devices, original xbox devices (via xbox->usb adapter) and some wired HID gamepads. See [here](src/devicelist.c)
-  If your device isn't in that list (or doesn't present itself as ds3 or xbox or xbox360 pad), see [that list](https://github.com/xboxdrv/xboxdrv/blob/stable/src/xpad_device.cpp#L29)
-  If it's in that list - i can add support. If it isn't - i, most likely, can't (yet) without having such device.
+  Currently it supports plenty of GIP (xbox one/series), x-input (xbox260) devices, original xbox devices (via xbox->usb adapter) and some wired HID gamepads. See [here](src/devicelist.c)
+  If your device isn't in this list (or doesn't present itself as ds3 or xbox or xbox360 or xboxone/series pad), see [that list](https://github.com/xboxdrv/xboxdrv/blob/stable/src/xpad_device.cpp#L29) and [that list](https://github.com/torvalds/linux/blob/master/drivers/input/joystick/xpad.c#L135)
+  If it's in those lists - i can add support. If it isn't - i, most likely, can't (yet) without having such device.
 * **Can i install it alongside another input plugin?**
   Generally that isn't recommended. Most input plugins (ds34vita/vitacontrol) hook same functions, conflicts will definitely arise.  
   You can use it with ds4touch/ds4motion.
