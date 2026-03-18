@@ -20,9 +20,9 @@ For full list of supported devices see [here](src/devicelist.c)
 * Gamecube adapter takes over all 4 gamepad ports, so you can't use wired and wireless gamepads simultaniously.
 * Third-party Gamecube adapter switch should be set to wiiu/switch mode. Supports force-feedback.
 * 8bitdo adapter requires setting it's mode to Dinput mode (see it's manual).
-* Wheel gas/brake are mapped to right stick up/down. Because games use whatever for gas/brake, use reVita to remap.
 * Logitech Formula Force EX button mapping follows it's ps2 variant. There's no force-feedback, only auto-centering.
 * Thrustmaster Ferrari Spider button map follows xbox mappings.
+* Wheel gas/brake are mapped to right stick up/down. Because games use whatever for gas/brake, use reVita to remap.
 
 ## Read this carefully
 There two versions of plugins: `vixen.skprx` and `vixen_ds3.skprx`. Second one supports wired ds3-alike pads.  
@@ -35,6 +35,7 @@ Tl;dr if you don't use anything, that presents itself as ds3 (except wireless ds
 ## Installing
 * Copy `vixen.skprx` or `vixen_ds3.skprx` into `ur0:tai` folder
 * Add `ur0:tai/vixen.skprx` or `ur0:tai/vixen.skprx` line under `*KERNEL` in tai config and reboot.
+* If you're using reVita - make sure vixen goes after it in config.
 * For vita you need usb Y-cable and external power. See [this](https://github.com/isage/vita-usb-ether#hardware) for example.
 * **usb hub with external power** is required for xbox one/series pads and anything with force-feedback.
 
