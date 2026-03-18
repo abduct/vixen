@@ -70,7 +70,9 @@ void on_write_data(int32_t result, int32_t count, void *arg)
 {
   Controller *c = (Controller *)arg;
   // check status
+#if defined(DEBUG)
   ksceDebugPrintf("wrote: result: 0x%08X, count: %d\n", result, count);
+#endif
   // do nothing?
 }
 

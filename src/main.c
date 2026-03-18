@@ -335,11 +335,11 @@ int libvixen_attach(int device_id)
       int cont = -1;
 
       // find free slot
-      for (int i = 0; i < MAX_CONTROLLERS; i++)
+      for (int j = 0; j < MAX_CONTROLLERS; j++)
       {
-        if (!controllers[i].inited)
+        if (!controllers[j].inited)
         {
-          cont = i;
+          cont = j;
           break;
         }
       }
